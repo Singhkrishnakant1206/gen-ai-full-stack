@@ -1,0 +1,438 @@
+$bg-base:        #0d0d0f;
+@use 'sass:color';
+$bg-card:        #1a1a1e;
+$bg-input:       #111113;
+$accent:         #e0195f;
+$border:         rgba(255, 255, 255, 0.07);
+$border-hover:   rgba(255, 255, 255, 0.13);
+$text-primary:   #f0ede8;
+$text-secondary: rgba(240, 237, 232, 0.5);
+$text-muted:     rgba(240, 237, 232, 0.28);
+$radius:         0.6rem;
+
+.home-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: $bg-base;
+  color: $text-primary;
+
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Open Sans', 'Helvetica Neue', sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 1.5rem 2rem 2rem;
+  gap: 1.5rem;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.page-header {
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.5rem;
+  margin-top: 0;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    margin: 0;
+    color: $text-primary;
+
+    em {
+      color: $accent;
+      font-style: normal;
+    }
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: $text-secondary;
+    margin: 0;
+    line-height: 1.6;
+  }
+}
+
+
+/* =========================
+   MAIN GROUP
+========================= */
+
+.interview-input-group {
+  width: 100%;
+  max-width: 1000px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+}
+
+
+/* =========================
+   TOP ROW
+========================= */
+
+.top-row {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+
+  .profile-card {
+    flex: 1.2;
+  }
+
+  .self-card {
+    flex: 1.4;
+  }
+
+  .actions-col {
+    flex: 0.8;
+  }
+}
+
+
+/* =========================
+   OR DIVIDER
+========================= */
+
+.or-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 0.75rem;
+  color: $text-muted;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+  background: $bg-card;
+
+  border: 0.5px solid $border;
+  border-radius: $radius;
+
+  padding: 1.2rem;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.6rem;
+
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: $border-hover;
+  }
+}
+
+
+/* =========================
+   JOB DESCRIPTION CARD
+========================= */
+
+.jd-card {
+  width: 100%;
+  max-width: 1000px;
+
+  padding: 1.5rem;
+
+  textarea {
+    min-height: 200px;
+  }
+}
+
+
+/* =========================
+   CARD HEADER
+========================= */
+
+.card-header {
+  display: flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  .card-icon {
+    font-size: 0.75rem;
+    color: $accent;
+
+    &.red {
+      color: $accent;
+    }
+  }
+
+  .card-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $text-primary;
+  }
+}
+
+
+/* =========================
+   BADGE
+========================= */
+
+.badge-required {
+  font-size: 0.65rem;
+
+  background: rgba(224, 25, 95, 0.12);
+  color: $accent;
+
+  border: 0.5px solid rgba(224, 25, 95, 0.25);
+  border-radius: 3px;
+
+  padding: 1px 6px;
+
+  font-weight: 500;
+}
+
+
+/* =========================
+   FIELD TEXT
+========================= */
+
+.field-hint {
+  font-size: 0.72rem;
+  color: $text-muted;
+
+  line-height: 1.5;
+  margin: 0;
+}
+
+
+/* =========================
+   TEXTAREA
+========================= */
+
+textarea {
+  width: 100%;
+
+  background: $bg-input;
+
+  border: 0.5px solid $border;
+  border-radius: 0.4rem;
+
+  padding: 0.7rem 0.9rem;
+
+  font-family: inherit;
+  font-size: 0.8rem;
+
+  color: $text-primary;
+
+  resize: none;
+  outline: none;
+
+  line-height: 1.6;
+
+  flex: 1;
+  min-height: 80px;
+
+  transition: border-color 0.15s;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    border-color: rgba(224, 25, 95, 0.35);
+
+    box-shadow: 0 0 0 3px rgba(224, 25, 95, 0.06);
+  }
+}
+
+
+/* =========================
+   CHARACTER COUNT
+========================= */
+
+.char-count {
+  font-size: 0.68rem;
+  color: $text-muted;
+
+  text-align: right;
+}
+
+
+/* =========================
+   UPLOAD ZONE
+========================= */
+
+.upload-zone {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.35rem;
+
+  padding: 1.2rem 0.75rem;
+
+  background: $bg-input;
+
+  border: 1.5px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 0.4rem;
+
+  cursor: pointer;
+  text-align: center;
+
+  transition: border-color 0.2s, background 0.2s;
+
+  min-height: 110px;
+
+  &:hover,
+  &.dragging {
+    border-color: rgba(224, 25, 95, 0.4);
+    background: rgba(224, 25, 95, 0.04);
+  }
+
+  &.has-file {
+    border-style: solid;
+
+    border-color: rgba(224, 25, 95, 0.4);
+
+    background: rgba(224, 25, 95, 0.05);
+  }
+
+  .upload-icon {
+    font-size: 1.2rem;
+    color: $accent;
+  }
+
+  .upload-title {
+    font-size: 0.75rem;
+    color: $text-primary;
+    font-weight: 500;
+  }
+
+  .upload-filename {
+    font-size: 0.75rem;
+    color: $accent;
+
+    font-weight: 500;
+    word-break: break-all;
+  }
+
+  .upload-sub {
+    font-size: 0.68rem;
+    color: $text-muted;
+  }
+}
+
+
+/* =========================
+   ACTIONS
+========================= */
+
+.actions-col {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-end;
+
+  gap: 0.75rem;
+
+  .actions-note {
+    font-size: 0.7rem;
+    color: $text-muted;
+
+    line-height: 1.5;
+    margin: 0;
+
+    strong {
+      color: $text-secondary;
+      font-weight: 500;
+    }
+  }
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.button {
+  border: none;
+  border-radius: $radius;
+
+  padding: 0.75rem 1rem;
+
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: opacity 0.15s, transform 0.1s;
+
+  &:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.primary-button {
+  background-color: $accent;
+  color: #fff;
+  width: 100%;
+}
+
+/* upgraded primary button with gradient and subtle shadow */
+.primary-button {
+  background: linear-gradient(90deg, $accent, color.adjust($accent, $lightness: -8%));
+  box-shadow: 0 8px 20px rgba(224,25,95,0.18);
+  border-radius: 999px;
+  padding: 0.85rem 1rem;
+}
+
+/* uplift upload zone */
+.upload-zone {
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(3,6,12,0.6);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover, &.dragging {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 50px rgba(224,25,95,0.14);
+  }
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .top-row {
+    flex-direction: column;
+  }
+
+  .or-divider {
+    justify-content: center;
+  }
+}
+ 
