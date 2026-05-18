@@ -1,13 +1,17 @@
 import axios from "axios"
 
 const api = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: "https://gen-ai-full-stack-backend.onrender.com",
     withCredentials: true,
 })
 
 export async function register({ username, email, password }) {
     try {
-        const response = await api.post("/api/auth/registration", { username, email, password })
+        const response = await api.post("/api/auth/registration", {
+            username,
+            email,
+            password
+        })
         return response.data
     } catch (err) {
         console.error("register error:", err?.response?.data || err.message || err)
@@ -17,7 +21,10 @@ export async function register({ username, email, password }) {
 
 export async function login({ email, password }) {
     try {
-        const response = await api.post("/api/auth/login", { email, password })
+        const response = await api.post("/api/auth/login", {
+            email,
+            password
+        })
         return response.data
     } catch (err) {
         console.error("login error:", err?.response?.data || err.message || err)
