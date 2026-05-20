@@ -5,13 +5,25 @@ const api = axios.create({
     withCredentials: true,
 })
 
+// ✅ Har request mein token automatically lagega
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token")
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+})
+
 export async function register({ username, email, password }) {
     try {
-        const response = await api.post("/api/auth/registration", {
+        const response = await api.post("/api/auth/register", {
             username,
             email,
             password
         })
+        if (response.data?.token) {
+            localStorage.setItem("token", response.data.token)  // ✅
+        }
         return response.data
     } catch (err) {
         console.error("register error:", err?.response?.data || err.message || err)
@@ -25,6 +37,9 @@ export async function login({ email, password }) {
             email,
             password
         })
+        if (response.data?.token) {
+            localStorage.setItem("token", response.data.token)  // ✅
+        }
         return response.data
     } catch (err) {
         console.error("login error:", err?.response?.data || err.message || err)
@@ -35,9 +50,11 @@ export async function login({ email, password }) {
 export async function logout() {
     try {
         const response = await api.get("/api/auth/logout")
+        localStorage.removeItem("token")  // ✅
         return response.data
     } catch (err) {
         console.error("logout error:", err?.response?.data || err.message || err)
+        localStorage.removeItem("token")
         throw err
     }
 }

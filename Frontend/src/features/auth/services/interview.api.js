@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:3000",
+    baseURL: "https://gen-ai-full-stack-backend.onrender.com",
     withCredentials: true,
 })
 
@@ -9,27 +9,60 @@ const api = axios.create({
 /**
  * @description Service to generate interview report based on user self description, resume and job description.
  */
-export const generateInterviewReport = async ({ jobDescription, selfDescription, resumeFile }) => {
+export const generateInterviewReport = async ({
+    jobDescription,
+    selfDescription,
+    resumeFile
+}) => {
 
     const formData = new FormData()
-    formData.append("jobDescription", jobDescription)
-    formData.append("selfDescription", selfDescription)
+
+    formData.append(
+        "jobDescription",
+        jobDescription
+    )
+
+    formData.append(
+        "selfDescription",
+        selfDescription
+    )
+
     if (resumeFile) {
-        formData.append("resume", resumeFile)
+        formData.append(
+            "resume",
+            resumeFile
+        )
     }
 
-    // Let the browser set the Content-Type (including boundary) for FormData
     try {
-        const response = await api.post("/api/interview/", formData)
+
+        const response =
+            await api.post(
+                "/api/interview/",
+                formData
+            )
 
         return response.data
+
     } catch (err) {
-        // Log server response (validation details) to browser console for debugging
+
         if (err?.response) {
-            console.error('Server error response:', err.response.status, err.response.data)
+
+            console.error(
+                "Server error response:",
+                err.response.status,
+                err.response.data
+            )
+
         } else {
-            console.error('API error:', err)
+
+            console.error(
+                "API error:",
+                err
+            )
+
         }
+
         throw err
     }
 
@@ -39,31 +72,69 @@ export const generateInterviewReport = async ({ jobDescription, selfDescription,
 /**
  * @description Service to get interview report by interviewId.
  */
-export const getInterviewReportById = async (interviewId) => {
-    // Backend exposes report at GET /api/interview/:interviewId
-    const response = await api.get(`/api/interview/${interviewId}`)
+export const getInterviewReportById =
+async (interviewId) => {
 
-    return response.data
+    try {
+
+        const response =
+            await api.get(
+                `/api/interview/${interviewId}`
+            )
+
+        return response.data
+
+    } catch (err) {
+
+        console.log(err)
+
+        throw err
+    }
+
 }
 
 
 /**
  * @description Service to get all interview reports of logged in user.
  */
-export const getAllInterviewReports = async () => {
-    const response = await api.get("/api/interview/")
+export const getAllInterviewReports =
+async () => {
 
-    return response.data
+    try {
+
+        const response =
+            await api.get(
+                "/api/interview/"
+            )
+
+        return response.data
+
+    } catch (err) {
+
+        console.log(err)
+
+        return {
+            interviewReports:[]
+        }
+    }
+
 }
 
 
 /**
- * @description Service to generate resume pdf based on user self description, resume content and job description.
+ * @description Service to generate resume pdf.
  */
-export const generateResumePdf = async ({ interviewReportId }) => {
-    const response = await api.post(`/api/interview/resume/pdf/${interviewReportId}`, null, {
-        responseType: "blob"
-    })
+export const generateResumePdf =
+async ({ interviewReportId }) => {
+
+    const response =
+        await api.post(
+            `/api/interview/resume/pdf/${interviewReportId}`,
+            null,
+            {
+                responseType:"blob"
+            }
+        )
 
     return response.data
 }

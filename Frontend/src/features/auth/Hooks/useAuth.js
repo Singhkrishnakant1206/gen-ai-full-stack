@@ -1,7 +1,6 @@
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../auth.context";
 import { login, register, logout, getMe } from "../services/auth.api";
-// import { useAuth } from "../../../hooks/useAuth";
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -13,51 +12,118 @@ export const useAuth = () => {
 
     try {
       const data = await login({ email, password });
-      setUser(data.user);
+
+      setUser(data?.user || null);
+
     } catch (err) {
+
       console.log(err);
+
+      setUser(null);
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
-  const handleRegister = async ({ username, email, password }) => {
+  const handleRegister = async ({
+    username,
+    email,
+    password,
+  }) => {
+
     setLoading(true);
+
     try {
-      const data = await register({ username, email, password });
-      setUser(data.user);
+
+      const data =
+        await register({
+          username,
+          email,
+          password,
+        });
+
+      setUser(data?.user || null);
+
+    } catch (err) {
+
+      console.log(err);
+
+      setUser(null);
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
   const handleLogout = async () => {
+
     setLoading(true);
+
     try {
+
       await logout();
+
       setUser(null);
+
+    } catch (err) {
+
+      console.log(err);
+
     } finally {
+
       setLoading(false);
+
     }
+
   };
 
   useEffect(() => {
+
     const getAndSetUser = async () => {
+
       try {
-        const data = await getMe();
-        setUser(data?.user || null);
+
+        const data =
+          await getMe();
+
+        if (data?.user) {
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
+
       } catch (err) {
-        console.log(err);
-        setUser(null);
+
+        if (
+          err?.response?.data?.message ===
+          "Token Not provided !"
+        ) {
+
+          setUser(null);
+
+        } else {
+
+          console.log(err);
+
+        }
+
       } finally {
+
         setLoading(false);
+
       }
+
     };
 
     getAndSetUser();
+
   }, []);
 
-  
   return {
     user,
     loading,
