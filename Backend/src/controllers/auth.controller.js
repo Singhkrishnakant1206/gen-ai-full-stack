@@ -20,27 +20,23 @@ async function registerUserController(req, res) {
         })
     }
 
-    const isUserAlreadyExist =
-        await userModel.findOne({
-            $or: [{ username }, { email }]
-        })
+    const isUserAlreadyExist = await userModel.findOne({
+        $or: [{ username }, { email }]
+    })
 
     if (isUserAlreadyExist) {
         return res.status(400).json({
-            message:
-                "Account already exist with this email address or username"
+            message: "Account already exist with this email address or username"
         })
     }
 
-    const hash =
-        await bcrypt.hash(password, 10)
+    const hash = await bcrypt.hash(password, 10)
 
-    const user =
-        await userModel.create({
-            username,
-            email,
-            password: hash
-        })
+    const user = await userModel.create({
+        username,
+        email,
+        password: hash
+    })
 
     const token = jwt.sign(
         {
@@ -48,21 +44,14 @@ async function registerUserController(req, res) {
             username: user.username
         },
         process.env.JWT_SECRET,
-        {
-            expiresIn: "1d"
-        }
+        { expiresIn: "1d" }
     )
 
-    res.cookie(
-        "token",
-        token,
-        cookieOptions
-    )
+    res.cookie("token", token, cookieOptions)
 
     res.status(201).json({
-        message:
-            "User Registered Successfully",
-
+        message: "User Registered Successfully",
+        token: token,  // ✅ added
         user: {
             id: user._id,
             username: user.username,
@@ -73,31 +62,21 @@ async function registerUserController(req, res) {
 
 async function loginUserController(req, res) {
 
-    const { email, password } =
-        req.body
+    const { email, password } = req.body
 
-    const user =
-        await userModel.findOne({
-            email
-        })
+    const user = await userModel.findOne({ email })
 
     if (!user) {
         return res.status(400).json({
-            message:
-                "Invalid Email or Password"
+            message: "Invalid Email or Password"
         })
     }
 
-    const isPasswordValid =
-        await bcrypt.compare(
-            password,
-            user.password
-        )
+    const isPasswordValid = await bcrypt.compare(password, user.password)
 
     if (!isPasswordValid) {
         return res.status(400).json({
-            message:
-                "Invalid Email or Password"
+            message: "Invalid Email or Password"
         })
     }
 
@@ -107,76 +86,51 @@ async function loginUserController(req, res) {
             username: user.username
         },
         process.env.JWT_SECRET,
-        {
-            expiresIn: "1d"
-        }
+        { expiresIn: "1d" }
     )
 
-    res.cookie(
-        "token",
-        token,
-        cookieOptions
-    )
+    res.cookie("token", token, cookieOptions)
 
     res.status(200).json({
-
-        message:
-            "User loggedIn successfully",
-
+        message: "User loggedIn successfully",
+        token: token,  // ✅ added
         user: {
             id: user._id,
             username: user.username,
             email: user.email
         }
-
     })
 }
 
 async function logoutUserControl(req, res) {
 
-    const token =
-        req.cookies.token
+    // ✅ Cookie ya header dono se token lo
+    const token = req.cookies?.token || 
+                  req.headers?.authorization?.split(" ")[1]
 
     if (token) {
-
-        await tokenBlacklistModel.create({
-            token
-        })
-
+        await tokenBlacklistModel.create({ token })
     }
 
-    res.clearCookie(
-        "token",
-        cookieOptions
-    )
+    res.clearCookie("token", cookieOptions)
 
     res.status(200).json({
-        message:
-            "User logged out successfully"
+        message: "User logged out successfully"
     })
-
 }
 
 async function getMeController(req, res) {
 
-    const user =
-        await userModel.findById(
-            req.user.id
-        )
+    const user = await userModel.findById(req.user.id)
 
     res.status(200).json({
-
-        message:
-            "User Details Fetch Successfully",
-
+        message: "User Details Fetch Successfully",
         user: {
             id: user._id,
             username: user.username,
             email: user.email
         }
-
     })
-
 }
 
 module.exports = {
