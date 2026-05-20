@@ -1,115 +1,184 @@
-const userModel =require("../models/user.model")
+const userModel = require("../models/user.model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-const tokenBlacklistModel= require("../models/blacklist.model")
-async function registerUserController(req,res){
-    const{username,email,password}= req.body
-    if(!username || !email || !password) {
+const tokenBlacklistModel = require("../models/blacklist.model")
+
+const cookieOptions = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 24 * 60 * 60 * 1000
+}
+
+async function registerUserController(req, res) {
+
+    const { username, email, password } = req.body
+
+    if (!username || !email || !password) {
         return res.status(400).json({
             message: "Please provide username,email and password"
         })
     }
-    const isUserAlreadyExist= await userModel.findOne({
-        $or:[{username} , {email}]
-    })
-   if(isUserAlreadyExist){
-    return res.status(400).json({
-        message: "Account already exist with this email address or username"
-    })
-   }
-   const hash= await bcrypt.hash(password,10)
-   const user =await userModel.create({
-    username,
-    email,
-    password:hash
-   })
-   const token = jwt.sign(
-    {
-        id:user._id,username: user.username
-    },
-    process.env.JWT_SECRET,
-    {expiresIn:"1d"}
-   )
-   res.cookie("token",token,{httpOnly:true , secure:false , sameSite:"lax"});
-   res.status(201).json({
-    message: "User Registered Successfully",
-    user:{
-        id:user._id,
-        username:user.username,
-        email:user.email
-    }
-   })
-}
 
-async function loginUserController(req,res){
-    const{email,password}=req.body
+    const isUserAlreadyExist =
+        await userModel.findOne({
+            $or: [{ username }, { email }]
+        })
 
-    const user = await userModel.findOne({email:email})
-
-    if(!user){
+    if (isUserAlreadyExist) {
         return res.status(400).json({
-            message: "Invalid Email or Password"
+            message:
+                "Account already exist with this email address or username"
         })
     }
 
-    const isPasswordValid=await bcrypt.compare( password,user.password)
+    const hash =
+        await bcrypt.hash(password, 10)
 
-    if(!isPasswordValid){
+    const user =
+        await userModel.create({
+            username,
+            email,
+            password: hash
+        })
+
+    const token = jwt.sign(
+        {
+            id: user._id,
+            username: user.username
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "1d"
+        }
+    )
+
+    res.cookie(
+        "token",
+        token,
+        cookieOptions
+    )
+
+    res.status(201).json({
+        message:
+            "User Registered Successfully",
+
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email
+        }
+    })
+}
+
+async function loginUserController(req, res) {
+
+    const { email, password } =
+        req.body
+
+    const user =
+        await userModel.findOne({
+            email
+        })
+
+    if (!user) {
         return res.status(400).json({
-            message: "Inavlid Email or password"
+            message:
+                "Invalid Email or Password"
         })
     }
 
+    const isPasswordValid =
+        await bcrypt.compare(
+            password,
+            user.password
+        )
 
-   const token = jwt.sign(
-    {
-        id:user._id,username: user.username
-    },
-    process.env.JWT_SECRET,
-    {expiresIn:"1d"}
-   )
-
-   res.cookie("token",token, {httpOnly:true, secure:false, sameSite:"lax"})
-   res.status(200).json({
-    message: "User loggedIn successfully",
-    user:{
-     id:user._id,
-     username: user.username,
-     emal: user.email
+    if (!isPasswordValid) {
+        return res.status(400).json({
+            message:
+                "Invalid Email or Password"
+        })
     }
 
-   })
+    const token = jwt.sign(
+        {
+            id: user._id,
+            username: user.username
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "1d"
+        }
+    )
+
+    res.cookie(
+        "token",
+        token,
+        cookieOptions
+    )
+
+    res.status(200).json({
+
+        message:
+            "User loggedIn successfully",
+
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email
+        }
+
+    })
 }
 
+async function logoutUserControl(req, res) {
 
-async function logoutUserControl(req,res) {
-    const token =req.cookies.token
+    const token =
+        req.cookies.token
 
-if(token){
-    await tokenBlacklistModel.create({token})
-}
-res.clearCookie("token")
-res.status(200).json({
-    message:"User logged out successfully"
-})
-    
-}
+    if (token) {
 
-async function getMeController(req,res){
+        await tokenBlacklistModel.create({
+            token
+        })
 
-const user = await userModel.findById(req.user.id)
-
-res.status(200).json({
- message:"User Details Fetch Successfully",
-
-    user:{
-        id:user._id,
-        username: user.username,
-        email:user.email
     }
-})
+
+    res.clearCookie(
+        "token",
+        cookieOptions
+    )
+
+    res.status(200).json({
+        message:
+            "User logged out successfully"
+    })
 
 }
+
+async function getMeController(req, res) {
+
+    const user =
+        await userModel.findById(
+            req.user.id
+        )
+
+    res.status(200).json({
+
+        message:
+            "User Details Fetch Successfully",
+
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email
+        }
+
+    })
+
+}
+
 module.exports = {
     registerUserController,
     loginUserController,
